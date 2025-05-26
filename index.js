@@ -108,5 +108,5 @@ function displayError(message) {
 
   setTimeout(() => {
     card.style.display = 'none';
-  }, 3000);
+  }, 5000);
 }
