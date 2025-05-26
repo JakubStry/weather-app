@@ -3,12 +3,13 @@ const cityInput = document.querySelector('.city-input');
 const card = document.querySelector('.card');
 weatherForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const city = cityInput.value;
+  const city = cityInput.value.trim();
 
-  if (city.trim()) {
+  if (city) {
     try {
       const weatherData = await getWeatherData(city);
       displayWeatherInfo(weatherData);
+      cityInput.value = '';
     } catch (error) {
       console.error(error);
       displayError(error);
@@ -20,11 +21,11 @@ weatherForm.addEventListener('submit', async (e) => {
 
 async function getWeatherData(city) {
   const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`
   );
 
   if (!response.ok) {
-    throw new Error('Could not fetch weather data.');
+    throw new Error('City not found. Please try again.');
   }
 
   const data = await response.json();
@@ -98,4 +99,8 @@ function displayError(message) {
   card.textContent = '';
   card.style.display = 'flex';
   card.appendChild(errorDisplay);
+
+  setTimeout(() => {
+    card.style.display = 'none';
+  }, 3000);
 }
