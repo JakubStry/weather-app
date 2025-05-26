@@ -2,11 +2,18 @@ const weatherForm = document.querySelector('.weather-form');
 const cityInput = document.querySelector('.city-input');
 const card = document.querySelector('.card');
 
-weatherForm.addEventListener('submit', (e) => {
+weatherForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const city = cityInput.value;
 
   if (city.trim()) {
+    try {
+      const weatherData = await getWeatherData(city);
+      displayWeatherInfo(weatherData);
+    } catch (error) {
+      console.error(error);
+      displayError(error);
+    }
   } else {
     displayError('Please enter a city');
   }
