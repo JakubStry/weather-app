@@ -25,7 +25,13 @@ async function getWeatherData(city) {
   );
 
   if (!response.ok) {
-    throw new Error('City not found. Please try again.');
+    if (response.status === 401) {
+      throw new Error('Invalid or missing API key. Please check config.js.');
+    } else if (response.status === 400) {
+      throw new Error('City not found. Please try again.');
+    } else {
+      throw new Error('Something went wrong. Please try again later.');
+    }
   }
 
   const data = await response.json();
