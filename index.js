@@ -1,6 +1,7 @@
 const weatherForm = document.querySelector('.weather-form');
 const cityInput = document.querySelector('.city-input');
 const card = document.querySelector('.card');
+let errorTimeout;
 weatherForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const city = cityInput.value.trim();
@@ -27,7 +28,7 @@ async function getWeatherData(city) {
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error('Invalid or missing API key. Please check config.js.');
-    } else if (response.status === 400) {
+    } else if (response.status === 404) {
       throw new Error('City not found. Please try again.');
     } else {
       throw new Error('Something went wrong. Please try again later.');
@@ -39,6 +40,8 @@ async function getWeatherData(city) {
 }
 
 function displayWeatherInfo(data) {
+  clearTimeout(errorTimeout);
+
   const {
     name: city,
     main: { temp, humidity },
@@ -98,6 +101,8 @@ function getWeatherEmoji(weatherId) {
 }
 
 function displayError(message) {
+  clearTimeout(errorTimeout);
+
   const errorDisplay = document.createElement('p');
   errorDisplay.textContent = message;
   errorDisplay.classList.add('error-display');
@@ -106,7 +111,7 @@ function displayError(message) {
   card.style.display = 'flex';
   card.appendChild(errorDisplay);
 
-  setTimeout(() => {
+  errorTimeout = setTimeout(() => {
     card.style.display = 'none';
   }, 5000);
 }
